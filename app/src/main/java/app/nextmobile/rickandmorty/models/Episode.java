@@ -5,12 +5,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
+
+import app.nextmobile.rickandmorty.utils.Util;
 
 public class Episode implements Serializable {
     private int id = 0;
@@ -77,6 +76,10 @@ public class Episode implements Serializable {
         this.created = created;
     }
 
+    public void setCreated(String dateString) {
+        this.created = Util.dateFromString(dateString);
+    }
+
     public static Episode fromJson(JSONObject object) {
         Episode episode = new Episode();
         try {
@@ -91,10 +94,9 @@ public class Episode implements Serializable {
                 charsList.add(chars.getString(i));
             }
             episode.setCharacters(charsList);
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.CANADA);
-            episode.setCreated(format.parse(object.getString("created")));
+            episode.setCreated(object.getString("created"));
 
-        } catch (JSONException | ParseException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 

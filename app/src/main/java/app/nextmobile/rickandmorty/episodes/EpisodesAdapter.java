@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -16,17 +17,28 @@ import app.nextmobile.rickandmorty.models.Episode;
 public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesViewHolder> {
 
     private List<Episode> episodes = new ArrayList<>();
+    private View.OnClickListener onItemClickListener;
+
+    public EpisodesAdapter(View.OnClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
 
     public void setData(List<Episode> episodes) {
         this.episodes = episodes;
         notifyDataSetChanged();
     }
 
+    @Nullable
+    public Episode getItemAtPosition(int pos) {
+        if (episodes.isEmpty() || pos >= episodes.size() || pos < 0) return null;
+        return episodes.get(pos);
+    }
+
     @NonNull
     @Override
     public EpisodesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_episode_list, parent, false);
-        return new EpisodesViewHolder(view);
+        return new EpisodesViewHolder(view, onItemClickListener);
     }
 
     @Override
@@ -39,4 +51,9 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesViewHolder> {
         return episodes.size();
     }
 
+//    RecyclerView.ViewHolder viewHolder = (RecyclerView.ViewHolder) view.getTag();
+//    int position = viewHolder.getAdapterPosition();
+//// viewHolder.getItemId();
+//// viewHolder.getItemViewType();
+//// viewHolder.itemView;
 }

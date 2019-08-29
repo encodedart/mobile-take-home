@@ -1,6 +1,7 @@
 package app.nextmobile.rickandmorty.episodes;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,11 +18,12 @@ import java.util.List;
 
 import app.nextmobile.rickandmorty.R;
 import app.nextmobile.rickandmorty.models.Episode;
+import app.nextmobile.rickandmorty.utils.Util;
 
 public class EpisodesFragment extends Fragment implements EpisodesContract.View {
 
     private EpisodesController controller;
-    private EpisodesAdapter adapter = new EpisodesAdapter();
+    private EpisodesAdapter adapter;
 
     @Nullable
     @Override
@@ -38,6 +40,16 @@ public class EpisodesFragment extends Fragment implements EpisodesContract.View 
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+
+        adapter  = new EpisodesAdapter(v -> {
+            EpisodesViewHolder holder = (EpisodesViewHolder) v.getTag();
+            int pos = holder.getAdapterPosition();
+            Episode episode = adapter.getItemAtPosition(pos);
+            Log.e("ADSDA", "Episode selected Name: " + episode.getName());
+            Util.navigateToCharactersList(getContext(), episode);
+        });
+
         recyclerView.setAdapter(adapter);
 
         controller = new ViewModelProvider(this).get(EpisodesController.class);
