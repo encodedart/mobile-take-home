@@ -1,52 +1,65 @@
 package app.nextmobile.rickandmorty.utils;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.ImageView;
 
-import java.io.IOException;
-import java.io.InputStream;
+import androidx.annotation.Nullable;
+
 import java.lang.ref.WeakReference;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
-public class ImageLoader extends AsyncTask<String, Void, Bitmap> {
-    private ImageLoaderDelegate delegate;
+public class ImageLoader {
 
-    public ImageLoader(ImageLoaderDelegate delegate) {
-        this.delegate = delegate;
+    private static ImageLoader  INSTANCE = null;
+    private Map<String, Bitmap> bitmapCache = new HashMap<>();
+
+    private ImageLoader() {
+
     }
 
-
-    @Override
-    protected void onPostExecute(Bitmap bitmap) {
-        if (delegate == null) {
-            bitmap.recycle();
-            return;
+    public static ImageLoader getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new ImageLoader();
         }
-        if (bitmap == null) {
-            delegate.onImageDownloadError();
-            return;
-        }
-        delegate.onImageDownloaded(bitmap);
+        return INSTANCE;
     }
 
-    @Override
-    protected Bitmap doInBackground(String... urls) {
-        String url = urls[0];
-        Bitmap bitmap = null;
-
-        try {
-            final InputStream inputStream = new URL(url).openStream();
-            bitmap = BitmapFactory.decodeStream(inputStream);
-        } catch (final MalformedURLException malformedUrlException) {
-            // Handle error
-        } catch (final IOException ioException) {
-            // Handle error
+    public void loadImageUrl(String url,final ImageView imageView) {
+        Bitmap savedBitmap = getCachedBitmap(url);
+        if (savedBitmap != null) {
+            imageView.setImageBitmap(savedBitmap);
+            return;
         }
-        return bitmap;
 
+        WeakReference<ImageView> imageViewRef = new WeakReference<>(imageView);
+        new ImageDownloader(new ImageLoaderDelegate() {
+            @Override
+            public void onImageDownloaded(final Bitmap bitmap) {
+                if (imageViewRef.get() != null) {
+                    imageViewRef.get().setImageBitmap(bitmap);
+                }
+                saveBitmap2Cache(url, bitmap);
+
+            }
+
+            @Override
+            public void onImageDownloadError() {
+
+            }
+        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
+    }
+
+    private void saveBitmap2Cache(String key, Bitmap bitmap) {
+        bitmapCache.put(key, bitmap);
+    }
+
+    @Nullable
+    private Bitmap getCachedBitmap(String key) {
+        if (bitmapCache.containsKey(key)) {
+            return bitmapCache.get(key);
+        }
+        return null;
     }
 }

@@ -51,9 +51,4 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesViewHolder> {
         return episodes.size();
     }
 
-//    RecyclerView.ViewHolder viewHolder = (RecyclerView.ViewHolder) view.getTag();
-//    int position = viewHolder.getAdapterPosition();
-//// viewHolder.getItemId();
-//// viewHolder.getItemViewType();
-//// viewHolder.itemView;
 }

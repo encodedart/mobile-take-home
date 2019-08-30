@@ -16,7 +16,7 @@ import app.nextmobile.rickandmorty.utils.Util;
 
 public class Character implements Serializable {
 
-    enum CharacterStatus {
+    public enum CharacterStatus {
         DEAD, ALIVE
     }
 
