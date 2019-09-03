@@ -32,8 +32,8 @@ public class EpisodesViewHolder extends RecyclerView.ViewHolder {
     public void bind(Episode item) {
         title.setText(item.getName());
         episodeName.setText(item.getEpisode());
-        airedDate.setText("Air date: " + item.getAirDate());
-        charCount.setText("Characters: " + item.getCharacters().size());
+        airedDate.setText(String.format(itemView.getResources().getString(R.string.air_date), item.getAirDate()));
+        charCount.setText(String.format(itemView.getResources().getString(R.string.characters), item.getCharacters().size()));
     }
 
 }

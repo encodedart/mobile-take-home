@@ -1,4 +1,4 @@
-package app.nextmobile.rickandmorty.characters;
+package app.nextmobile.rickandmorty.characters.list;
 
 import androidx.lifecycle.LiveData;
 
@@ -10,5 +10,8 @@ public class CharactersListContract {
 
     interface Controller {
         LiveData<List<Character>> getCharacters(List<String> links);
+        void tryAgain();
+        LiveData<Boolean> getOnError();
+
     }
 }

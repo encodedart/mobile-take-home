@@ -1,31 +1,30 @@
-package app.nextmobile.rickandmorty.characters;
+package app.nextmobile.rickandmorty.characters.list;
 
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import app.nextmobile.rickandmorty.R;
-import app.nextmobile.rickandmorty.episodes.EpisodesViewHolder;
 import app.nextmobile.rickandmorty.models.Character;
 import app.nextmobile.rickandmorty.models.Episode;
+import app.nextmobile.rickandmorty.utils.BaseFragment;
+import app.nextmobile.rickandmorty.utils.Util;
 
-public class CharactersFragment extends Fragment {
+public class CharactersFragment extends BaseFragment {
 
     private static final String EPISODE_DATA = "EPISODE DATA";
 
     private Episode episode;
-    private CharactersViewModel controller;
     private CharactersAdapter adapter;
+    private CharactersViewModel controller;
 
     public static CharactersFragment getFragment(Episode episode) {
         CharactersFragment fragment = new CharactersFragment();
@@ -44,10 +43,11 @@ public class CharactersFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        showBackButton();
         Bundle bundle = getArguments();
         if (bundle != null && bundle.containsKey(EPISODE_DATA)) {
             episode = (Episode) bundle.getSerializable(EPISODE_DATA);
-            Log.e("CHARS", episode.getName());
+            setTitle(episode.getName());
         }
 
         RecyclerView recyclerView = view.findViewById(R.id.episodes_list);
@@ -61,17 +61,26 @@ public class CharactersFragment extends Fragment {
             CharactersViewHolder holder = (CharactersViewHolder) v.getTag();
             int pos = holder.getAdapterPosition();
             Character character = adapter.getItemAtPosition(pos);
-            Log.e("ADSDA", "Episode selected Name: " + character.getName());
-//            Util.navigateToCharactersList(getContext(), episode);
+            Util.navigateToCharacter(getContext(), character, v);
         });
 
         recyclerView.setAdapter(adapter);
 
+        setProgressBar(true);
         controller = new ViewModelProvider(this).get(CharactersViewModel.class);
         controller.getCharacters(episode.getCharacters()).observe(this, characters -> {
-            Log.e("CHAR FRAG", characters.get(0).getName());
             adapter.setData(characters);
+            setProgressBar(false);
         });
+
+        controller.getOnError().observe(this, this::setErrorStatus);
+    }
+
+    @Override
+    protected void tryAgain() {
+        setErrorStatus(false);
+        setProgressBar(true);
+        controller.tryAgain();
     }
 
     public class GridItemDecoration extends RecyclerView.ItemDecoration {

@@ -59,14 +59,14 @@
 
     <View
         android:id="@+id/char_select"
-        app:layout_constraintTop_toTopOf="@id/char_image"
-        app:layout_constraintStart_toStartOf="@id/char_image"
-        app:layout_constraintBottom_toBottomOf="@id/char_image"
-        app:layout_constraintEnd_toEndOf="@id/char_image"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
-        android:layout_width="0dp"
-        android:layout_height="0dp"/>
+        app:layout_constraintBottom_toBottomOf="@id/char_image"
+        app:layout_constraintEnd_toEndOf="@id/char_image"
+        app:layout_constraintStart_toStartOf="@id/char_image"
+        app:layout_constraintTop_toTopOf="@id/char_image" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

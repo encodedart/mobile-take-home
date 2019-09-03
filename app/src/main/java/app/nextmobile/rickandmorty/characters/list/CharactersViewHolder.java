@@ -1,4 +1,4 @@
-package app.nextmobile.rickandmorty.characters;
+package app.nextmobile.rickandmorty.characters.list;
 
 import android.graphics.Color;
 import android.text.TextUtils;
@@ -7,11 +7,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import app.nextmobile.rickandmorty.R;
 import app.nextmobile.rickandmorty.models.Character;
-import app.nextmobile.rickandmorty.utils.ImageLoader;
+import app.nextmobile.rickandmorty.utils.ServiceLocator;
 
 public class CharactersViewHolder extends RecyclerView.ViewHolder {
 
@@ -30,21 +31,24 @@ public class CharactersViewHolder extends RecyclerView.ViewHolder {
         species = itemView.findViewById(R.id.char_species);
         View clickView = itemView.findViewById(R.id.char_select);
         clickView.setTag(this);
-        clickView.setOnClickListener(onItemClickListener);
+        image.setTag(this);
+        clickView.setOnClickListener(v -> onItemClickListener.onClick(image));
     }
 
     public void bind(Character item) {
+        status.setText(item.getStatus().getType());
         if (item.getStatus() == Character.CharacterStatus.DEAD) {
-            status.setText("Dead");
             status.setTextColor(Color.RED);
-        } else {
-            status.setText("Alive");
+        } else if (item.getStatus() == Character.CharacterStatus.ALIVE) {
             status.setTextColor(Color.WHITE);
+        } else {
+            status.setTextColor(Color.LTGRAY);
         }
         name.setText(item.getName());
+        ViewCompat.setTransitionName(image, item.getName());
         species.setText(item.getSpecies() + ", " + item.getGender());
         if (!TextUtils.isEmpty(item.getImage())) {
-            ImageLoader.getInstance().loadImageUrl(item.getImage(), image);
+            ServiceLocator.getInstance().getImageLoader().loadImageUrl(item.getImage(), image);
         }
     }
 }

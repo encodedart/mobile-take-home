@@ -1,4 +1,4 @@
-package app.nextmobile.rickandmorty.characters;
+package app.nextmobile.rickandmorty.characters.list;
 
 import android.view.LayoutInflater;
 import android.view.View;

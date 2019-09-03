@@ -17,7 +17,19 @@ import app.nextmobile.rickandmorty.utils.Util;
 public class Character implements Serializable {
 
     public enum CharacterStatus {
-        DEAD, ALIVE
+        DEAD("Dead"),
+        ALIVE("Alive"),
+        UNKNOW("Unknow");
+
+        private  String type;
+
+        CharacterStatus(String st) {
+            this.type = st;
+        }
+
+        public String getType() {
+            return type;
+        }
     }
 
     private int id;
@@ -145,8 +157,10 @@ public class Character implements Serializable {
         if (TextUtils.isEmpty(statusString)) return;
         if (statusString.equalsIgnoreCase("alive")) {
             status = CharacterStatus.ALIVE;
-        } else {
+        } else if (statusString.equalsIgnoreCase("dead")) {
             status = CharacterStatus.DEAD;
+        } else {
+            status = CharacterStatus.UNKNOW;
         }
     }
 
@@ -189,36 +203,3 @@ public class Character implements Serializable {
     }
 }
 
-class Detail {
-    private String name = "";
-    private String url = "";
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public static Detail fromJson(JSONObject object) {
-        Detail detail = new Detail();
-        if (object != null) {
-            try {
-                detail.setName(object.getString("name"));
-                detail.setUrl(object.getString("url"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        return detail;
-    }
-}

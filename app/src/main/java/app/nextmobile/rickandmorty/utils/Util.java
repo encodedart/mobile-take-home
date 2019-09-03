@@ -1,7 +1,7 @@
 package app.nextmobile.rickandmorty.utils;
 
 import android.content.Context;
-import android.util.Log;
+import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,18 +13,19 @@ import java.util.Date;
 import java.util.Locale;
 
 import app.nextmobile.rickandmorty.R;
-import app.nextmobile.rickandmorty.characters.CharactersFragment;
+import app.nextmobile.rickandmorty.characters.CharacterFragment;
+import app.nextmobile.rickandmorty.characters.list.CharactersFragment;
 import app.nextmobile.rickandmorty.episodes.EpisodesFragment;
+import app.nextmobile.rickandmorty.models.Character;
 import app.nextmobile.rickandmorty.models.Episode;
 
 public class Util {
 
     public static void navigateToEpisodesList(Context context) {
-        Log.e("MAIN","Nav to Episodes List");
         Fragment fragment = new EpisodesFragment();
         ((AppCompatActivity) context).getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.content, fragment, "EPISODES LIST")
+                .replace(R.id.content, fragment, "EPISODES LIST")
                 .addToBackStack("EPISODES LIST")
                 .commit();
     }
@@ -33,8 +34,18 @@ public class Util {
         Fragment fragment = CharactersFragment.getFragment(episode);
         ((AppCompatActivity) context).getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.content, fragment, "CHARS LIST")
+                .replace(R.id.content, fragment, "CHARS LIST")
                 .addToBackStack("CHARS LIST")
+                .commit();
+    }
+
+    public static void navigateToCharacter(Context context, Character character, View image) {
+        Fragment fragment = CharacterFragment.getFragment(character.getId());
+        ((AppCompatActivity) context).getSupportFragmentManager()
+                .beginTransaction()
+                .addSharedElement(image, character.getName())
+                .replace(R.id.content, fragment, "CHARS VIEW")
+                .addToBackStack("CHARS VIEW")
                 .commit();
     }
 

@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Rick and Morty</string>
+    <string name="gender">Gender</string>
+    <string name="status">Status</string>
+    <string name="species">Species</string>
+    <string name="origin">Origin</string>
+    <string name="location">Location</string>
+    <string name="kill">Kill %s</string>
+    <string name="air_date">Air date: %s</string>
+    <string name="characters">Characters: %d</string>
+    <string name="try_again">TRY AGAIN</string>
+    <string name="something_wrong">Ops, something went wrong getting data from API.</string>
 </resources>

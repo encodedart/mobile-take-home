@@ -1,6 +1,6 @@
 package app.nextmobile.rickandmorty.repos;
 
-public interface HttpRequestInterface<T> {
+public interface RequestInterface<T> {
     void onResult(T result);
     void onError();
 }

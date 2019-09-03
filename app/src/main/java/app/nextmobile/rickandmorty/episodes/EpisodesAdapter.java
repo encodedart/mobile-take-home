@@ -6,32 +6,23 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import androidx.paging.PagedListAdapter;
+import androidx.recyclerview.widget.DiffUtil;
 import app.nextmobile.rickandmorty.R;
 import app.nextmobile.rickandmorty.models.Episode;
 
-public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesViewHolder> {
+public class EpisodesAdapter extends PagedListAdapter<Episode, EpisodesViewHolder> {
 
-    private List<Episode> episodes = new ArrayList<>();
     private View.OnClickListener onItemClickListener;
 
-    public EpisodesAdapter(View.OnClickListener onItemClickListener) {
+    EpisodesAdapter(View.OnClickListener onItemClickListener) {
+        super(DIFF_CALLBACK);
         this.onItemClickListener = onItemClickListener;
     }
 
-    public void setData(List<Episode> episodes) {
-        this.episodes = episodes;
-        notifyDataSetChanged();
-    }
-
     @Nullable
-    public Episode getItemAtPosition(int pos) {
-        if (episodes.isEmpty() || pos >= episodes.size() || pos < 0) return null;
-        return episodes.get(pos);
+    Episode getItemAtPosition(int pos) {
+        return getItem(pos);
     }
 
     @NonNull
@@ -43,12 +34,18 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull EpisodesViewHolder holder, int position) {
-        holder.bind(episodes.get(position));
+        holder.bind(getItem(position));
     }
 
-    @Override
-    public int getItemCount() {
-        return episodes.size();
-    }
+    private static final DiffUtil.ItemCallback<Episode> DIFF_CALLBACK = new DiffUtil.ItemCallback<Episode>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull Episode oldItem, @NonNull Episode newItem) {
+            return oldItem.getId() == oldItem.getId();
+        }
 
+        @Override
+        public boolean areContentsTheSame(@NonNull Episode oldItem, @NonNull Episode newItem) {
+            return oldItem.getId() == oldItem.getId();
+        }
+    };
 }

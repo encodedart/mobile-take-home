@@ -5,26 +5,23 @@ import android.os.AsyncTask;
 import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
+import androidx.collection.LruCache;
 
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.Map;
+
+/**
+ * Loading image from URL
+ * Using LruCache to cache bitmap Image
+ */
 
 public class ImageLoader {
 
-    private static ImageLoader  INSTANCE = null;
-    private Map<String, Bitmap> bitmapCache = new HashMap<>();
-
-    private ImageLoader() {
-
-    }
-
-    public static ImageLoader getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new ImageLoader();
+    private int cacheSize = 10 * 1024 * 1024; // 10MiB cache size
+    private final LruCache<String, Bitmap> bitmapCache = new LruCache<String, Bitmap>(cacheSize) {
+        protected int sizeOf(String key, Bitmap value) {
+            return value.getByteCount();
         }
-        return INSTANCE;
-    }
+    };
 
     public void loadImageUrl(String url,final ImageView imageView) {
         Bitmap savedBitmap = getCachedBitmap(url);
@@ -52,14 +49,13 @@ public class ImageLoader {
     }
 
     private void saveBitmap2Cache(String key, Bitmap bitmap) {
-        bitmapCache.put(key, bitmap);
+        synchronized (bitmapCache) {
+            bitmapCache.put(key, bitmap);
+        }
     }
 
     @Nullable
     private Bitmap getCachedBitmap(String key) {
-        if (bitmapCache.containsKey(key)) {
-            return bitmapCache.get(key);
-        }
-        return null;
+        return bitmapCache.get(key);
     }
 }
